@@ -1,0 +1,472 @@
+{
+  "buildPresets": [
+    {
+      "hidden": true,
+      "name": "base_verbose",
+      "verbose": true
+    },
+    {
+      "condition": {
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux",
+        "type": "equals"
+      },
+      "hidden": true,
+      "name": "base_system_linux"
+    },
+    {
+      "hidden": true,
+      "name": "base_build_ninja",
+      "nativeToolOptions": [
+        "-d",
+        "keepdepfile"
+      ]
+    },
+    {
+      "configurePreset": "example_configure",
+      "hidden": false,
+      "name": "example_build"
+    },
+    {
+      "configurePreset": "example_configure_shared",
+      "hidden": false,
+      "name": "example_build_shared"
+    },
+    {
+      "configurePreset": "configure_linux_valgrind_clang",
+      "hidden": false,
+      "inherits": [
+        "base_build_ninja",
+        "base_system_linux",
+        "base_verbose"
+      ],
+      "name": "build_linux_valgrind_clang"
+    },
+    {
+      "configurePreset": "configure_linux_valgrind_gcc",
+      "hidden": false,
+      "inherits": [
+        "base_build_ninja",
+        "base_system_linux",
+        "base_verbose"
+      ],
+      "name": "build_linux_valgrind_gcc"
+    },
+    {
+      "configurePreset": "configure_linux_clang",
+      "hidden": false,
+      "inherits": [
+        "base_build_ninja",
+        "base_system_linux",
+        "base_verbose"
+      ],
+      "name": "build_linux_clang"
+    },
+    {
+      "configurePreset": "configure_linux_clang_shared",
+      "hidden": false,
+      "inherits": [
+        "base_build_ninja",
+        "base_system_linux",
+        "base_verbose"
+      ],
+      "name": "build_linux_clang_shared"
+    },
+    {
+      "configurePreset": "configure_linux_gcc",
+      "hidden": false,
+      "inherits": [
+        "base_build_ninja",
+        "base_system_linux",
+        "base_verbose"
+      ],
+      "name": "build_linux_gcc"
+    },
+    {
+      "configurePreset": "configure_linux_gcc_shared",
+      "hidden": false,
+      "inherits": [
+        "base_build_ninja",
+        "base_system_linux",
+        "base_verbose"
+      ],
+      "name": "build_linux_gcc_shared"
+    },
+    {
+      "configurePreset": "ide_clion_configure_linux_clang",
+      "hidden": false,
+      "inherits": [
+        "base_build_ninja",
+        "base_system_linux",
+        "base_verbose"
+      ],
+      "name": "ide_clion_build_linux_clang"
+    },
+    {
+      "configurePreset": "configure_linux_gcc_coverage",
+      "hidden": false,
+      "inherits": [
+        "base_build_ninja",
+        "base_system_linux",
+        "base_verbose"
+      ],
+      "name": "build_linux_gcc_coverage"
+    },
+    {
+      "configurePreset": "configure_linux_clang_address_sanitizer",
+      "hidden": false,
+      "inherits": [
+        "base_build_ninja",
+        "base_system_linux",
+        "base_verbose"
+      ],
+      "name": "build_linux_clang_address_sanitizer"
+    },
+    {
+      "configurePreset": "configure_linux_clang_undefined_behaviour_sanitizer",
+      "hidden": false,
+      "inherits": [
+        "base_build_ninja",
+        "base_system_linux",
+        "base_verbose"
+      ],
+      "name": "build_linux_clang_undefined_behaviour_sanitizer"
+    }
+  ],
+  "configurePresets": [
+    {
+      "cacheVariables": {
+        "PRESET_PROP_DISABLE_CXX_EXTENSIONS_ZTkaVxCMQM3oirzt": true,
+        "PRESET_PROP_ENABLE_COMPILE_WARNING_AS_ERROR_j5uTVGEDUFvPoIl2": true,
+        "PRESET_PROP_ENABLE_EXPORT_COMPILE_COMMANDS_24glti6xd2Ftvubl": true,
+        "PRESET_PROP_ENABLE_LINK_WARNING_AS_ERROR_lpaveeBRixaZAzep": true
+      },
+      "hidden": true,
+      "name": "base_target_properties"
+    },
+    {
+      "cacheVariables": {
+        "PRESET_BUILD_TESTS_hbaOdCRUtos3noqP": true
+      },
+      "hidden": true,
+      "name": "base_enable_tests_build"
+    },
+    {
+      "cacheVariables": {
+        "PRESET_USE_ADDRESS_SANITIZER_ZYa64JrwBOtpJj5c": true
+      },
+      "hidden": true,
+      "name": "base_enable_address_sanitizer"
+    },
+    {
+      "cacheVariables": {
+        "PRESET_USE_UNDEFINED_BEHAVIOUR_SANITIZER_okaq3yGk9W5QitvT": true
+      },
+      "hidden": true,
+      "name": "base_enable_undefined_behaviour_sanitizer"
+    },
+    {
+      "generator": "Ninja Multi-Config",
+      "hidden": true,
+      "name": "base_generator_ninja"
+    },
+    {
+      "cacheVariables": {
+        "PRESET_ENABLE_ELEVATED_COMPILER_WARNINGS_DsB7oi4FszBN6aCM": true
+      },
+      "hidden": true,
+      "name": "base_elevated_compiler_warnings"
+    },
+    {
+      "cacheVariables": {
+        "PRESET_ENABLE_COVERAGE_3RLK2ia0bPNYn8Sc": true
+      },
+      "hidden": true,
+      "name": "base_enable_coverage"
+    },
+    {
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": true
+      },
+      "hidden": true,
+      "name": "base_build_shared_libs"
+    },
+    {
+      "condition": {
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux",
+        "type": "equals"
+      },
+      "hidden": true,
+      "name": "base_system_linux"
+    },
+    {
+      "cacheVariables": {
+        "PRESET_VALGRIND_COMPILER_OPTIONS_K6qJhA9LkLWzUJ7Q": true
+      },
+      "hidden": true,
+      "name": "base_valgrind"
+    },
+    {
+      "binaryDir": "${sourceDir}/../build___/tricks_build_static___",
+      "generator": "Ninja Multi-Config",
+      "hidden": false,
+      "installDir": "${sourceDir}/../build___/tricks_install_static___",
+      "name": "example_configure"
+    },
+    {
+      "binaryDir": "${sourceDir}/../build___/tricks_build_shared___",
+      "generator": "Ninja Multi-Config",
+      "hidden": false,
+      "inherits": [
+        "base_build_shared_libs"
+      ],
+      "installDir": "${sourceDir}/../build___/tricks_install_shared___",
+      "name": "example_configure_shared"
+    },
+    {
+      "binaryDir": "${sourceDir}/../build___/build_linux_valgrind_clang_sNf2FtaXxxjZisAs___",
+      "hidden": false,
+      "inherits": [
+        "base_valgrind",
+        "base_elevated_compiler_warnings",
+        "base_generator_ninja",
+        "base_system_linux",
+        "base_enable_tests_build",
+        "base_target_properties"
+      ],
+      "installDir": "${sourceDir}/../build___/install_linux_valgrind_clang_gpZI4IYt2yPT9NGq___",
+      "name": "configure_linux_valgrind_clang"
+    },
+    {
+      "binaryDir": "${sourceDir}/../build___/build_linux_valgrind_gcc_AxkmakPU0hybGXBj___",
+      "hidden": false,
+      "inherits": [
+        "base_valgrind",
+        "base_elevated_compiler_warnings",
+        "base_generator_ninja",
+        "base_system_linux",
+        "base_enable_tests_build",
+        "base_target_properties"
+      ],
+      "installDir": "${sourceDir}/../build___/install_linux_valgrind_gcc_AVhgyfUM953O9SRf___",
+      "name": "configure_linux_valgrind_gcc"
+    },
+    {
+      "binaryDir": "${sourceDir}/../build___/build_linux_clang_wXaP40842lEhoeKy___",
+      "hidden": false,
+      "inherits": [
+        "base_elevated_compiler_warnings",
+        "base_generator_ninja",
+        "base_system_linux",
+        "base_enable_tests_build",
+        "base_target_properties"
+      ],
+      "installDir": "${sourceDir}/../build___/install_linux_clang_3Zmt1jZ2tX78q99m___",
+      "name": "configure_linux_clang"
+    },
+    {
+      "binaryDir": "${sourceDir}/../build___/build_linux_clang_shared_oHrNg4FTSyUkbyB8___",
+      "hidden": false,
+      "inherits": [
+        "base_elevated_compiler_warnings",
+        "base_generator_ninja",
+        "base_system_linux",
+        "base_enable_tests_build",
+        "base_build_shared_libs",
+        "base_target_properties"
+      ],
+      "installDir": "${sourceDir}/../build___/install_linux_clang_shared_53lmnTwJ47XGWy02___",
+      "name": "configure_linux_clang_shared"
+    },
+    {
+      "binaryDir": "${sourceDir}/../build___/build_linux_gcc_aexdNA76QZNQx2vr___",
+      "hidden": false,
+      "inherits": [
+        "base_elevated_compiler_warnings",
+        "base_generator_ninja",
+        "base_system_linux",
+        "base_enable_tests_build",
+        "base_target_properties"
+      ],
+      "installDir": "${sourceDir}/../build___/install_linux_gcc_66FNVYdbok2K2OYw___",
+      "name": "configure_linux_gcc"
+    },
+    {
+      "binaryDir": "${sourceDir}/../build___/build_linux_gcc_shared_0bEYCUdj6TffKjNB___",
+      "hidden": false,
+      "inherits": [
+        "base_elevated_compiler_warnings",
+        "base_generator_ninja",
+        "base_system_linux",
+        "base_enable_tests_build",
+        "base_build_shared_libs",
+        "base_target_properties"
+      ],
+      "installDir": "${sourceDir}/../build___/install_linux_gcc_shared_KI9k58ZMv29eUtkf___",
+      "name": "configure_linux_gcc_shared"
+    },
+    {
+      "binaryDir": "${sourceDir}/../ide_clion_build_linux_clang_LCOWa4Wvm8CUyGpX___",
+      "hidden": false,
+      "inherits": [
+        "base_elevated_compiler_warnings",
+        "base_generator_ninja",
+        "base_system_linux",
+        "base_enable_tests_build",
+        "base_target_properties"
+      ],
+      "installDir": "${sourceDir}/../ide_clion_install_linux_clang_O3nyb9uflAQixT7G___",
+      "name": "ide_clion_configure_linux_clang"
+    },
+    {
+      "binaryDir": "${sourceDir}/../build___/build_linux_gcc_coverage_AiqB6YM83vBjcQ1T___",
+      "hidden": false,
+      "inherits": [
+        "base_elevated_compiler_warnings",
+        "base_generator_ninja",
+        "base_system_linux",
+        "base_enable_tests_build",
+        "base_target_properties",
+        "base_enable_coverage"
+      ],
+      "installDir": "${sourceDir}/../build___/install_linux_gcc_coverage_Z155EVoRHkNOXNHs___",
+      "name": "configure_linux_gcc_coverage"
+    },
+    {
+      "binaryDir": "${sourceDir}/../build___/build_linux_clang_address_sanitizer_ueBvUWFUquf1zJr0___",
+      "hidden": false,
+      "inherits": [
+        "base_elevated_compiler_warnings",
+        "base_generator_ninja",
+        "base_system_linux",
+        "base_enable_tests_build",
+        "base_target_properties",
+        "base_enable_address_sanitizer"
+      ],
+      "installDir": "${sourceDir}/../build___/install_linux_clang_address_sanitizer_WnzJjPZwndRovYaf___",
+      "name": "configure_linux_clang_address_sanitizer"
+    },
+    {
+      "binaryDir": "${sourceDir}/../build___/build_linux_clang_undefined_behaviour_sanitizer_Q1iNOZYVNiTVn3XE___",
+      "hidden": false,
+      "inherits": [
+        "base_elevated_compiler_warnings",
+        "base_generator_ninja",
+        "base_system_linux",
+        "base_enable_tests_build",
+        "base_target_properties",
+        "base_enable_undefined_behaviour_sanitizer"
+      ],
+      "installDir": "${sourceDir}/../build___/install_linux_clang_undefined_behaviour_sanitizer_ELKtKws2fr1ZLUSp___",
+      "name": "configure_linux_clang_undefined_behaviour_sanitizer"
+    }
+  ],
+  "testPresets": [
+    {
+      "condition": {
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux",
+        "type": "equals"
+      },
+      "hidden": true,
+      "name": "base_test_linux"
+    },
+    {
+      "execution": {
+        "noTestsAction": "error",
+        "scheduleRandom": true,
+        "stopOnFailure": false,
+        "timeout": 3600
+      },
+      "hidden": true,
+      "name": "base_test_config",
+      "output": {
+        "outputOnFailure": true,
+        "verbosity": "default"
+      }
+    },
+    {
+      "configurePreset": "configure_linux_valgrind_clang",
+      "hidden": false,
+      "inherits": [
+        "base_test_config",
+        "base_test_linux"
+      ],
+      "name": "test_linux_valgrind_clang"
+    },
+    {
+      "configurePreset": "configure_linux_valgrind_gcc",
+      "hidden": false,
+      "inherits": [
+        "base_test_config",
+        "base_test_linux"
+      ],
+      "name": "test_linux_valgrind_gcc"
+    },
+    {
+      "configurePreset": "configure_linux_clang",
+      "hidden": false,
+      "inherits": [
+        "base_test_config",
+        "base_test_linux"
+      ],
+      "name": "test_linux_clang"
+    },
+    {
+      "configurePreset": "configure_linux_clang_shared",
+      "hidden": false,
+      "inherits": [
+        "base_test_config",
+        "base_test_linux"
+      ],
+      "name": "test_linux_clang_shared"
+    },
+    {
+      "configurePreset": "configure_linux_gcc",
+      "hidden": false,
+      "inherits": [
+        "base_test_config",
+        "base_test_linux"
+      ],
+      "name": "test_linux_gcc"
+    },
+    {
+      "configurePreset": "configure_linux_gcc_shared",
+      "hidden": false,
+      "inherits": [
+        "base_test_config",
+        "base_test_linux"
+      ],
+      "name": "test_linux_gcc_shared"
+    },
+    {
+      "configurePreset": "configure_linux_gcc_coverage",
+      "hidden": false,
+      "inherits": [
+        "base_test_config",
+        "base_test_linux"
+      ],
+      "name": "test_linux_gcc_coverage"
+    },
+    {
+      "configurePreset": "configure_linux_clang_address_sanitizer",
+      "hidden": false,
+      "inherits": [
+        "base_test_config",
+        "base_test_linux"
+      ],
+      "name": "test_linux_clang_address_sanitizer"
+    },
+    {
+      "configurePreset": "configure_linux_clang_undefined_behaviour_sanitizer",
+      "hidden": false,
+      "inherits": [
+        "base_test_config",
+        "base_test_linux"
+      ],
+      "name": "test_linux_clang_undefined_behaviour_sanitizer"
+    }
+  ],
+  "version": 10
+}
