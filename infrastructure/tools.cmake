@@ -1,0 +1,500 @@
+# Copyright (c) 2025 Wojciech Kałuża
+# SPDX-License-Identifier: MIT
+# For license details, see LICENSE file
+
+include_guard(GLOBAL)
+
+macro(add_to_all_tests)
+  if(TARGET all_tests)
+    add_dependencies(all_tests ${arg_TARGET})
+  endif()
+endmacro()
+
+macro(add_basic_test)
+  add_test(NAME test_${arg_TARGET} COMMAND $<TARGET_FILE:${arg_TARGET}>)
+  set_tests_properties(test_${arg_TARGET} PROPERTIES LABELS test)
+  set_tests_properties(
+    test_${arg_TARGET}
+    PROPERTIES ENVIRONMENT TRICKS_INTERNAL_RUNNING_TEST_n2nBoE696uMUZjpj=123)
+
+  if(DEFINED arg_EXPECTED_FAILURE AND arg_EXPECTED_FAILURE)
+    set_tests_properties(test_${arg_TARGET} PROPERTIES WILL_FAIL TRUE)
+  endif()
+endmacro()
+
+macro(add_valgrind_memcheck_test)
+  add_test(
+    NAME valgrind_memcheck_${arg_TARGET}
+    COMMAND
+      valgrind --tool=memcheck --read-var-info=yes --read-inline-info=yes
+      --trace-children=yes --leak-check=full --show-leak-kinds=all
+      --error-exitcode=1 $<TARGET_FILE:${arg_TARGET}>
+    CONFIGURATIONS Debug)
+  set(valgrind_memcheck_${arg_TARGET}_labels valgrind valgrind_memcheck)
+  set_tests_properties(
+    valgrind_memcheck_${arg_TARGET}
+    PROPERTIES LABELS "${valgrind_memcheck_${arg_TARGET}_labels}")
+  set_tests_properties(
+    valgrind_memcheck_${arg_TARGET}
+    PROPERTIES ENVIRONMENT TRICKS_INTERNAL_RUNNING_TEST_n2nBoE696uMUZjpj=123)
+
+  if(DEFINED arg_EXPECTED_FAILURE AND arg_EXPECTED_FAILURE)
+    set_tests_properties(valgrind_memcheck_${arg_TARGET} PROPERTIES WILL_FAIL
+                                                                    TRUE)
+  endif()
+endmacro()
+
+macro(add_valgrind_helgrind_test)
+  add_test(
+    NAME valgrind_helgrind_${arg_TARGET}
+    COMMAND
+      valgrind --tool=helgrind --read-var-info=yes --read-inline-info=yes
+      --trace-children=yes --error-exitcode=1 $<TARGET_FILE:${arg_TARGET}>)
+  set(valgrind_helgrind_${arg_TARGET}_labels valgrind valgrind_helgrind)
+  set_tests_properties(
+    valgrind_helgrind_${arg_TARGET}
+    PROPERTIES LABELS "${valgrind_helgrind_${arg_TARGET}_labels}")
+  set_tests_properties(
+    valgrind_helgrind_${arg_TARGET}
+    PROPERTIES ENVIRONMENT TRICKS_INTERNAL_RUNNING_TEST_n2nBoE696uMUZjpj=123)
+
+  if(DEFINED arg_EXPECTED_FAILURE AND arg_EXPECTED_FAILURE)
+    set_tests_properties(valgrind_helgrind_${arg_TARGET} PROPERTIES WILL_FAIL
+                                                                    TRUE)
+  endif()
+endmacro()
+
+macro(links_and_sources)
+  if(DEFINED arg_SOURCES)
+    target_sources(${arg_TARGET} PRIVATE ${arg_SOURCES})
+  endif()
+
+  if(DEFINED arg_PRIVATE_LINKS)
+    target_link_libraries(${arg_TARGET} PRIVATE ${arg_PRIVATE_LINKS})
+  endif()
+  if(DEFINED arg_PUBLIC_LINKS)
+    target_link_libraries(${arg_TARGET} PUBLIC ${arg_PUBLIC_LINKS})
+  endif()
+endmacro()
+
+macro(interface_links)
+  if(DEFINED arg_INTERFACE_LINKS)
+    target_link_libraries(${arg_TARGET} INTERFACE ${arg_INTERFACE_LINKS})
+  endif()
+endmacro()
+
+macro(exclude_from_all)
+  set_target_properties(${arg_TARGET} PROPERTIES EXCLUDE_FROM_ALL TRUE)
+endmacro()
+
+macro(do_not_install_public_headers)
+  header_file_sets_and_libraries()
+
+  if(DEFINED arg_PUBLIC_HEADERS)
+    target_link_libraries(
+      ${arg_TARGET}
+      PUBLIC $<BUILD_LOCAL_INTERFACE:library_interface_headers_${arg_TARGET}>
+      PRIVATE $<BUILD_LOCAL_INTERFACE:library_own_headers_${arg_TARGET}>)
+  endif()
+endmacro()
+
+macro(install_public_headers)
+  header_file_sets_and_libraries()
+
+  if(DEFINED arg_PUBLIC_HEADERS)
+    target_link_libraries(
+      ${arg_TARGET}
+      PUBLIC library_interface_headers_${arg_TARGET}
+      PRIVATE $<BUILD_LOCAL_INTERFACE:library_own_headers_${arg_TARGET}>)
+  endif()
+endmacro()
+
+macro(conditionally_enable_pic)
+  if(BUILD_SHARED_LIBS)
+    set_target_properties(${arg_TARGET} PROPERTIES POSITION_INDEPENDENT_CODE
+                                                   TRUE)
+  endif()
+endmacro()
+
+macro(standard_presets)
+  if(DEFINED PRESET_ENABLE_ELEVATED_COMPILER_WARNINGS_DsB7oi4FszBN6aCM
+     AND PRESET_ENABLE_ELEVATED_COMPILER_WARNINGS_DsB7oi4FszBN6aCM)
+    target_compile_options(${arg_TARGET} PRIVATE -Wall -Wextra -Wpedantic)
+  endif()
+
+  if(DEFINED PRESET_PROP_ENABLE_COMPILE_WARNING_AS_ERROR_j5uTVGEDUFvPoIl2
+     AND PRESET_PROP_ENABLE_COMPILE_WARNING_AS_ERROR_j5uTVGEDUFvPoIl2)
+    set_target_properties(${arg_TARGET} PROPERTIES COMPILE_WARNING_AS_ERROR
+                                                   TRUE)
+  endif()
+
+  if(DEFINED PRESET_PROP_ENABLE_LINK_WARNING_AS_ERROR_lpaveeBRixaZAzep
+     AND PRESET_PROP_ENABLE_LINK_WARNING_AS_ERROR_lpaveeBRixaZAzep)
+    set_target_properties(${arg_TARGET} PROPERTIES LINK_WARNING_AS_ERROR TRUE)
+  endif()
+
+  if(DEFINED PRESET_PROP_DISABLE_CXX_EXTENSIONS_ZTkaVxCMQM3oirzt
+     AND PRESET_PROP_DISABLE_CXX_EXTENSIONS_ZTkaVxCMQM3oirzt)
+    set_target_properties(${arg_TARGET} PROPERTIES CXX_EXTENSIONS FALSE)
+  endif()
+
+  if(DEFINED PRESET_PROP_ENABLE_EXPORT_COMPILE_COMMANDS_24glti6xd2Ftvubl
+     AND PRESET_PROP_ENABLE_EXPORT_COMPILE_COMMANDS_24glti6xd2Ftvubl)
+    set_target_properties(${arg_TARGET} PROPERTIES EXPORT_COMPILE_COMMANDS TRUE)
+  endif()
+endmacro()
+
+macro(conditionally_enable_coverage)
+  if(DEFINED PRESET_ENABLE_COVERAGE_3RLK2ia0bPNYn8Sc
+     AND PRESET_ENABLE_COVERAGE_3RLK2ia0bPNYn8Sc)
+    target_compile_options(${arg_TARGET} PRIVATE --coverage)
+    target_link_options(${arg_TARGET} PRIVATE --coverage)
+
+    target_compile_definitions(
+      ${arg_TARGET} PRIVATE TRICKS_INTERNAL_COVERAGE_mdQALaahdZe7YFv4)
+  endif()
+endmacro()
+
+macro(conditionally_configure_compiler_for_valgrind)
+  if(DEFINED PRESET_VALGRIND_COMPILER_OPTIONS_K6qJhA9LkLWzUJ7Q
+     AND PRESET_VALGRIND_COMPILER_OPTIONS_K6qJhA9LkLWzUJ7Q)
+    target_compile_options(${arg_TARGET} PRIVATE -g -fno-inline)
+  endif()
+endmacro()
+
+macro(disable_exceptions_in_coverage_mode)
+  if(DEFINED PRESET_ENABLE_COVERAGE_3RLK2ia0bPNYn8Sc
+     AND PRESET_ENABLE_COVERAGE_3RLK2ia0bPNYn8Sc)
+    target_compile_options(${arg_TARGET} PRIVATE -fno-exceptions)
+  endif()
+endmacro()
+
+macro(conditionally_enable_address_sanitizer)
+  if(DEFINED PRESET_USE_ADDRESS_SANITIZER_ZYa64JrwBOtpJj5c
+     AND PRESET_USE_ADDRESS_SANITIZER_ZYa64JrwBOtpJj5c)
+    target_compile_options(
+      ${arg_TARGET} PRIVATE -fsanitize=address -g -fno-omit-frame-pointer
+                            -fno-inline-functions -fno-optimize-sibling-calls)
+    target_link_options(${arg_TARGET} PRIVATE -fsanitize=address -g)
+  endif()
+endmacro()
+
+macro(conditionally_enable_undefined_behaviour_sanitizer)
+  if(DEFINED PRESET_USE_UNDEFINED_BEHAVIOUR_SANITIZER_okaq3yGk9W5QitvT
+     AND PRESET_USE_UNDEFINED_BEHAVIOUR_SANITIZER_okaq3yGk9W5QitvT)
+    target_compile_options(
+      ${arg_TARGET}
+      PRIVATE -g
+              -fsanitize=undefined
+              -fsanitize=bounds
+              -fsanitize=float-divide-by-zero
+              -fsanitize=implicit-conversion
+              -fsanitize=integer
+              -fsanitize=nullability
+              -fsanitize=vptr
+              -fno-sanitize=unsigned-integer-overflow
+              -fno-sanitize-recover=all)
+    target_link_options(${arg_TARGET} PRIVATE -g -fsanitize=undefined)
+  endif()
+endmacro()
+
+macro(header_file_sets_and_libraries)
+  if(NOT DEFINED arg_TARGET OR NOT DEFINED arg_DIRECTORY)
+    message(FATAL_ERROR "header_file_sets_and_libraries error")
+  endif()
+
+  if(DEFINED arg_PRIVATE_HEADERS)
+    target_sources(
+      ${arg_TARGET}
+      PRIVATE FILE_SET
+              internal_headers_${arg_TARGET}
+              TYPE
+              HEADERS
+              BASE_DIRS
+              ${arg_DIRECTORY}/internal
+              FILES
+              ${arg_PRIVATE_HEADERS})
+  endif()
+
+  if(DEFINED arg_PUBLIC_HEADERS)
+    if(NOT DEFINED arg_INCLUDE_PREFIX)
+      set(arg_INCLUDE_PREFIX ${arg_TARGET})
+    endif()
+
+    add_library(library_own_headers_${arg_TARGET} INTERFACE)
+    target_sources(
+      library_own_headers_${arg_TARGET}
+      INTERFACE FILE_SET
+                own_headers_${arg_TARGET}
+                TYPE
+                HEADERS
+                BASE_DIRS
+                ${arg_DIRECTORY}/include/${arg_INCLUDE_PREFIX}
+                FILES
+                ${arg_PUBLIC_HEADERS})
+
+    add_library(library_interface_headers_${arg_TARGET} INTERFACE)
+    target_sources(
+      library_interface_headers_${arg_TARGET}
+      INTERFACE FILE_SET
+                interface_headers_${arg_TARGET}
+                TYPE
+                HEADERS
+                BASE_DIRS
+                ${arg_DIRECTORY}/include
+                FILES
+                ${arg_PUBLIC_HEADERS})
+  endif()
+endmacro()
+
+macro(prepare_paths)
+  set(PROJECT_ROOT_DIR_QLoXqPHY58ECWuH0 ${CMAKE_CURRENT_SOURCE_DIR}/..)
+
+  if(DEFINED arg_DIRECTORY)
+    set(arg_DIRECTORY ${PROJECT_ROOT_DIR_QLoXqPHY58ECWuH0}/${arg_DIRECTORY})
+  endif()
+  if(DEFINED arg_SOURCES)
+    list(TRANSFORM arg_SOURCES PREPEND ${arg_DIRECTORY}/)
+  endif()
+  if(DEFINED arg_PRIVATE_HEADERS)
+    list(TRANSFORM arg_PRIVATE_HEADERS PREPEND ${arg_DIRECTORY}/internal/)
+  endif()
+  if(DEFINED arg_PUBLIC_HEADERS)
+    if(NOT DEFINED arg_INCLUDE_PREFIX)
+      set(arg_INCLUDE_PREFIX ${arg_TARGET})
+    endif()
+    list(TRANSFORM arg_PUBLIC_HEADERS
+         PREPEND ${arg_DIRECTORY}/include/${arg_INCLUDE_PREFIX}/)
+  endif()
+endmacro()
+
+macro(prepare_platform_specific_paths)
+  if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(operating_system_name "linux")
+  endif()
+
+  set(PROJECT_ROOT_DIR_QD0hogaJsmZjov9X ${CMAKE_CURRENT_SOURCE_DIR}/..)
+
+  if(DEFINED arg_DIRECTORY)
+    set(arg_DIRECTORY ${PROJECT_ROOT_DIR_QD0hogaJsmZjov9X}/${arg_DIRECTORY})
+  endif()
+  if(DEFINED arg_SOURCES)
+    list(TRANSFORM arg_SOURCES
+         PREPEND ${arg_DIRECTORY}/${operating_system_name}/)
+  endif()
+  if(DEFINED arg_PRIVATE_HEADERS)
+    list(TRANSFORM arg_PRIVATE_HEADERS PREPEND ${arg_DIRECTORY}/internal/)
+  endif()
+  if(DEFINED arg_PUBLIC_HEADERS)
+    list(TRANSFORM arg_PUBLIC_HEADERS
+         PREPEND ${arg_DIRECTORY}/include/${arg_TARGET}/)
+  endif()
+endmacro()
+
+macro(common_macros)
+  links_and_sources()
+  conditionally_configure_compiler_for_valgrind()
+  conditionally_enable_coverage()
+  conditionally_enable_address_sanitizer()
+  conditionally_enable_undefined_behaviour_sanitizer()
+  standard_presets()
+endmacro()
+
+macro(common_test_macros)
+  exclude_from_all()
+  add_to_all_tests()
+  disable_exceptions_in_coverage_mode()
+endmacro()
+
+function(new_implementation_library)
+  set(options PLACEHOLDER_OPTION)
+  set(singleValueKeywords DIRECTORY TARGET INCLUDE_PREFIX)
+  set(multiValueKeywords PRIVATE_LINKS PUBLIC_LINKS PRIVATE_HEADERS
+                         PUBLIC_HEADERS SOURCES)
+  cmake_parse_arguments(PARSE_ARGV 0 "arg" "${options}"
+                        "${singleValueKeywords}" "${multiValueKeywords}")
+
+  prepare_paths()
+
+  add_library(${arg_TARGET})
+  target_compile_features(
+    ${arg_TARGET}
+    PRIVATE cxx_std_23
+    PUBLIC cxx_std_11)
+
+  install_public_headers()
+  disable_exceptions_in_coverage_mode()
+  conditionally_enable_pic()
+  common_macros()
+endfunction()
+
+function(new_exported_library)
+  set(options PLACEHOLDER_OPTION)
+  set(singleValueKeywords TARGET)
+  set(multiValueKeywords INTERFACE_LINKS)
+  cmake_parse_arguments(PARSE_ARGV 0 "arg" "${options}"
+                        "${singleValueKeywords}" "${multiValueKeywords}")
+
+  prepare_paths()
+
+  add_library(${arg_TARGET} INTERFACE)
+  target_compile_features(${arg_TARGET} INTERFACE cxx_std_11)
+
+  interface_links()
+endfunction()
+
+function(new_internal_library)
+  set(options PLACEHOLDER_OPTION)
+  set(singleValueKeywords DIRECTORY TARGET)
+  set(multiValueKeywords PRIVATE_LINKS PRIVATE_HEADERS PUBLIC_HEADERS SOURCES)
+  cmake_parse_arguments(PARSE_ARGV 0 "arg" "${options}"
+                        "${singleValueKeywords}" "${multiValueKeywords}")
+
+  prepare_paths()
+
+  add_library(${arg_TARGET} STATIC)
+  target_compile_features(
+    ${arg_TARGET}
+    PRIVATE cxx_std_23
+    PUBLIC cxx_std_23)
+
+  do_not_install_public_headers()
+  disable_exceptions_in_coverage_mode()
+  conditionally_enable_pic()
+  common_macros()
+endfunction()
+
+function(new_platform_specific_internal_library)
+  set(options PLACEHOLDER_OPTION)
+  set(singleValueKeywords DIRECTORY TARGET)
+  set(multiValueKeywords PRIVATE_LINKS PRIVATE_HEADERS PUBLIC_HEADERS SOURCES)
+  cmake_parse_arguments(PARSE_ARGV 0 "arg" "${options}"
+                        "${singleValueKeywords}" "${multiValueKeywords}")
+
+  prepare_platform_specific_paths()
+
+  add_library(${arg_TARGET} STATIC)
+  target_compile_features(
+    ${arg_TARGET}
+    PRIVATE cxx_std_23
+    PUBLIC cxx_std_23)
+
+  do_not_install_public_headers()
+  disable_exceptions_in_coverage_mode()
+  conditionally_enable_pic()
+  common_macros()
+endfunction()
+
+function(new_test_library)
+  set(options PLACEHOLDER_OPTION)
+  set(singleValueKeywords DIRECTORY TARGET)
+  set(multiValueKeywords PRIVATE_LINKS PRIVATE_HEADERS PUBLIC_HEADERS SOURCES)
+  cmake_parse_arguments(PARSE_ARGV 0 "arg" "${options}"
+                        "${singleValueKeywords}" "${multiValueKeywords}")
+
+  prepare_paths()
+
+  add_library(${arg_TARGET} STATIC)
+  target_compile_features(
+    ${arg_TARGET}
+    PRIVATE cxx_std_23
+    PUBLIC cxx_std_23)
+
+  do_not_install_public_headers()
+  exclude_from_all()
+  common_macros()
+endfunction()
+
+function(new_basic_test name)
+  set(arg_TARGET ${name})
+  set(arg_DIRECTORY test/functional_tests/${name})
+  set(arg_SOURCES main.cpp)
+  set(arg_PRIVATE_LINKS tricks test_helpers)
+
+  prepare_paths()
+
+  add_executable(${arg_TARGET})
+  target_compile_features(${arg_TARGET} PRIVATE cxx_std_23)
+
+  add_basic_test()
+  add_valgrind_memcheck_test()
+  add_valgrind_helgrind_test()
+  common_test_macros()
+  common_macros()
+endfunction()
+
+function(new_crash_test name)
+  set(arg_TARGET ${name})
+  set(arg_DIRECTORY test/functional_tests/${name})
+  set(arg_SOURCES main.cpp)
+  set(arg_PRIVATE_LINKS tricks test_helpers)
+
+  prepare_paths()
+
+  add_executable(${arg_TARGET})
+  target_compile_features(${arg_TARGET} PRIVATE cxx_std_23)
+
+  add_basic_test()
+  common_test_macros()
+  common_macros()
+endfunction()
+
+function(new_impl_test name)
+  set(arg_TARGET ${name})
+  set(arg_DIRECTORY test/functional_tests/${name})
+  set(arg_SOURCES main.cpp)
+  set(arg_PRIVATE_LINKS tricks test_helpers)
+
+  prepare_paths()
+
+  set(PROJECT_ROOT_DIR_asMwaonGxUGo3Y0r ${CMAKE_CURRENT_SOURCE_DIR}/..)
+
+  add_executable(${arg_TARGET})
+  target_compile_features(${arg_TARGET} PRIVATE cxx_std_23)
+  target_link_libraries(${name} PRIVATE assert coverage process)
+  target_include_directories(
+    ${name}
+    PRIVATE ${PROJECT_ROOT_DIR_asMwaonGxUGo3Y0r}/src/tricks/internal
+            ${PROJECT_ROOT_DIR_asMwaonGxUGo3Y0r}/src/tricks/include/tricks)
+
+  add_basic_test()
+  add_valgrind_memcheck_test()
+  add_valgrind_helgrind_test()
+  common_test_macros()
+  common_macros()
+endfunction()
+
+function(prepare_installation)
+  add_library(tricks::tricks ALIAS tricks)
+
+  if(BUILD_SHARED_LIBS)
+    install(
+      TARGETS tricks tricks_impl library_interface_headers_tricks_impl
+      EXPORT tricks-targets
+      FILE_SET interface_headers_tricks_impl
+      ARCHIVE DESTINATION lib/$<CONFIG>
+      LIBRARY DESTINATION lib/$<CONFIG>
+      RUNTIME DESTINATION bin/$<CONFIG>)
+  else()
+    install(
+      TARGETS tricks tricks_impl library_interface_headers_tricks_impl
+      EXPORT tricks-targets
+      FILE_SET interface_headers_tricks_impl
+      ARCHIVE DESTINATION lib/$<CONFIG>
+      LIBRARY DESTINATION lib/$<CONFIG>
+      RUNTIME DESTINATION bin/$<CONFIG>)
+  endif()
+  install(
+    EXPORT tricks-targets
+    DESTINATION cmake
+    FILE tricks-config.cmake
+    NAMESPACE tricks::)
+
+  include(CMakePackageConfigHelpers)
+  write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/tricks-config-version.cmake
+    COMPATIBILITY ExactVersion)
+
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tricks-config-version.cmake
+          DESTINATION cmake)
+endfunction()
